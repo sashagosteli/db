@@ -37,3 +37,15 @@ SELECT
 FROM  messages m
 left join  users u on m.from_user_id = u.id
 group by m.from_user_id;
+
+-- 3. Выберите все сообщения, отсортируйте сообщения по возрастанию даты отправления
+-- (created_at) и найдите разницу дат отправления между соседними сообщениями, получившегося
+-- списка. (используйте LEAD или LAG)
+
+SELECT 
+	*, 
+    LAG(created_at,1,0) OVER dt as LAG_last_message_was,
+    LEAD(created_at,1,0) OVER dt as LEAD_next_message_will_come,
+    created_at - LAG(created_at,1) OVER(ORDER BY created_at) as time_diff_seconds
+FROM messages
+WINDOW dt AS(order by created_at);
