@@ -1,0 +1,19 @@
+-- 2. Найдите кол-во, отправленных сообщений каждым пользователем и выведите
+-- ранжированный список пользователей, указав имя и фамилию пользователя, количество
+-- отправленных сообщений и место в рейтинге (первое место у пользователя с максимальным
+-- количеством сообщений) . (используйте DENSE_RANK)
+
+
+use semimar_4;
+SELECT
+	m.from_user_id ,
+    COUNT(m.from_user_id) as count_msg,
+	DENSE_RANK()
+	OVER(ORDER BY COUNT(m.from_user_id) DESC) AS 'DANSE_RANK',
+    u.firstname,
+	u.lastname,
+	u.id
+
+FROM  messages m
+left join  users u on m.from_user_id = u.id
+group by m.from_user_id;
