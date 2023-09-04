@@ -1,8 +1,27 @@
-CREATE TABLE `semimar_4`.`users_old` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `firstname` VARCHAR(50) NULL,
-  `lastname` VARCHAR(50) NULL,
-  `email` VARCHAR(120) NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE);
+SELECT * FROM semimar_4.users;
+
+DROP PROCEDURE IF EXISTS into_users_old;
+DELIMITER //
+CREATE PROCEDURE into_users_old()
+LANGUAGE SQL
+DETERMINISTIC
+SQL SECURITY DEFINER
+COMMENT 'Added user_old'
+BEGIN
+	START TRANSACTION;
+    DROP TABLE users_old ;
+    CREATE TABLE users_old AS
+		(SELECT  id,
+			firstname,
+			lastname,
+            email
+		FROM users
+		WHERE id = @user);
+    COMMIT;
+   
+END //
+DELIMITER ;
+SET @user = 3;
+CALL into_users_old();
+
+SELECT * FROM users_old;
